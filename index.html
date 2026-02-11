@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sugarloaf Quotation Tool</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background: #f0f2f5; padding: 40px 20px; color: #333; }
+        .container { max-width: 850px; margin: auto; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; }
+        
+        /* Ensures the banner is exactly the width of the form */
+        .header-image { width: 100%; height: auto; display: block; }
+        
+        .content { padding: 40px; }
+        .row { display: flex; justify-content: space-between; margin-bottom: 30px; }
+        
+        .field-label { font-weight: bold; font-size: 0.9em; color: #666; text-transform: uppercase; display: block; margin-bottom: 5px; }
+        input[type="text"], input[type="email"], input[type="date"], input[type="number"] { 
+            border: 1px solid #ddd; padding: 10px; border-radius: 4px; width: 100%; box-sizing: border-box; font-size: 14px;
+        }
+        
+        table { width: 100%; border-collapse: collapse; margin: 30px 0; }
+        th { text-align: left; padding: 12px; border-bottom: 2px solid #2c5e50; color: #2c5e50; }
+        td { padding: 12px; border-bottom: 1px solid #eee; }
+        
+        .total-section { text-align: right; margin-top: 20px; border-top: 2px solid #eee; padding-top: 20px; }
+        .total-row { font-size: 1.4em; font-weight: bold; color: #2c5e50; }
+        
+        .actions { margin-top: 40px; text-align: center; }
+        .btn { background: #2c5e50; color: white; padding: 15px 40px; border: none; border-radius: 30px; cursor: pointer; font-size: 18px; font-weight: bold; transition: 0.3s; }
+        .btn:hover { background: #1e3f36; transform: translateY(-2px); }
+        
+        /* Clean inputs for table */
+        .table-input { border: none !important; background: transparent; width: 100% !important; }
+        .table-input:focus { outline: none; background: #f9f9f9; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <img src="sugarloaf.jpg" class="header-image" alt="Sugarloaf Backpackers Lodge">
+
+    <div class="content">
+        <div class="row">
+            <div style="width: 45%;">
+                <span class="field-label">Client Name</span>
+                <input type="text" id="clientName" placeholder="Enter name">
+                <br><br>
+                <span class="field-label">Client Email</span>
+                <input type="email" id="clientEmail" placeholder="client@example.com">
+            </div>
+            <div style="width: 45%; text-align: right;">
+                <span class="field-label">Date</span>
+                <input type="date" id="quoteDate">
+                <br><br>
+                <span class="field-label">Quote Number</span>
+                <input type="text" id="quoteNum" value="1001" style="text-align: right;">
+            </div>
+        </div>
+
+        <table id="quoteTable">
+            <thead>
+                <tr>
+                    <th style="width: 50%;">Description</th>
+                    <th>Qty</th>
+                    <th>Price (ZAR)</th>
+                    <th style="text-align: right;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="text" class="table-input item-desc" placeholder="Booking Details..."></td>
+                    <td><input type="number" class="table-input item-qty" value="0" oninput="calculate()"></td>
+                    <td><input type="number" class="table-input item-price" value="0" oninput="calculate()"></td>
+                    <td style="text-align: right; font-weight: bold;">R <span class="item-total">0.00</span></td>
+                </tr>
+                <tr>
+                    <td><input type="text" class="table-input item-desc" placeholder="Extras..."></td>
+                    <td><input type="number" class="table-input item-qty" value="0" oninput="calculate()"></td>
+                    <td><input type="number" class="table-input item-price" value="0" oninput="calculate()"></td>
+                    <td style="text-align: right; font-weight: bold;">R <span class="item-total">0.00</span></td>
+                </tr>
+                <tr>
+                    <td><input type="text" class="table-input item-desc" placeholder="..."></td>
+                    <td><input type="number" class="table-input item-qty" value="0" oninput="calculate()"></td>
+                    <td><input type="number" class="table-input item-price" value="0" oninput="calculate()"></td>
+                    <td style="text-align: right; font-weight: bold;">R <span class="item-total">0.00</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="total-section">
+            <div class="total-row">Grand Total: R <span id="grandTotal">0.00</span></div>
+        </div>
+
+        <div class="actions">
+            <button class="btn" onclick="sendEmail()">Email Quotation to Client</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Sets default date to today
+    document.getElementById('quoteDate').valueAsDate = new Date();
+
+    function calculate() {
+        let rows = document.querySelectorAll('#quoteTable tbody tr');
+        let grandTotal = 0;
+
+        rows.forEach(row => {
+            let qty = parseFloat(row.querySelector('.item-qty').value) || 0;
+            let price = parseFloat(row.querySelector('.item-price').value) || 0;
+            let total = qty * price;
+            row.querySelector('.item-total').innerText = total.toFixed(2);
+            grandTotal += total;
+        });
+
+        document.getElementById('grandTotal').innerText = grandTotal.toFixed(2);
+    }
+
+    function sendEmail() {
+        const email = document.getElementById('clientEmail').value;
+        const name = document.getElementById('clientName').value;
+        const total = document.getElementById('grandTotal').innerText;
+        const quoteNo = document.getElementById('quoteNum').value;
+        const date = document.getElementById('quoteDate').value;
+
+        if(!email) { alert("Please enter a client email address first!"); return; }
+        
+        const subject = `Quotation from Sugarloaf Backpackers - #${quoteNo}`;
+        let body = `Hi ${name},\n\nThank you for your inquiry at Sugarloaf Backpackers Lodge.\n\nQuote Summary (#${quoteNo}):\nDate: ${date}\nTotal Amount: R ${total}\n\nTerms: Valid for 30 days. 50% deposit confirms booking.\n\nWe look forward to hosting you!`;
+        
+        window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }
+</script>
+
+</body>
+</html>
