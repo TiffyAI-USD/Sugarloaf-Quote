@@ -5,34 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sugarloaf Quotation Tool</title>
     <style>
-        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background: #f0f2f5; padding: 40px 20px; color: #333; }
-        .container { max-width: 850px; margin: auto; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; }
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 10px; color: #333; }
+        .container { max-width: 800px; margin: auto; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; }
         
-        /* Ensures the banner is exactly the width of the form */
+        /* Banner remains edge-to-edge */
         .header-image { width: 100%; height: auto; display: block; }
         
-        .content { padding: 40px; }
-        .row { display: flex; justify-content: space-between; margin-bottom: 30px; }
+        .content { padding: 20px; }
         
-        .field-label { font-weight: bold; font-size: 0.9em; color: #666; text-transform: uppercase; display: block; margin-bottom: 5px; }
-        input[type="text"], input[type="email"], input[type="date"], input[type="number"] { 
-            border: 1px solid #ddd; padding: 10px; border-radius: 4px; width: 100%; box-sizing: border-box; font-size: 14px;
+        /* Responsive Grid for Header Info */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        
+        @media (max-width: 600px) {
+            .info-grid { grid-template-columns: 1fr; } /* Stacks on mobile */
+            .content { padding: 15px; }
+            th, td { font-size: 13px; padding: 8px 4px; }
+            .btn { width: 100%; padding: 15px; }
         }
         
-        table { width: 100%; border-collapse: collapse; margin: 30px 0; }
-        th { text-align: left; padding: 12px; border-bottom: 2px solid #2c5e50; color: #2c5e50; }
-        td { padding: 12px; border-bottom: 1px solid #eee; }
+        .field-label { font-weight: bold; font-size: 0.85em; color: #2c5e50; text-transform: uppercase; display: block; margin-bottom: 4px; }
+        input { border: 1px solid #ddd; padding: 10px; border-radius: 4px; width: 100%; box-sizing: border-box; font-size: 16px; }
         
-        .total-section { text-align: right; margin-top: 20px; border-top: 2px solid #eee; padding-top: 20px; }
-        .total-row { font-size: 1.4em; font-weight: bold; color: #2c5e50; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; table-layout: fixed; }
+        th { text-align: left; padding: 10px 5px; border-bottom: 2px solid #2c5e50; color: #2c5e50; }
+        td { padding: 10px 5px; border-bottom: 1px solid #eee; overflow: hidden; }
         
-        .actions { margin-top: 40px; text-align: center; }
-        .btn { background: #2c5e50; color: white; padding: 15px 40px; border: none; border-radius: 30px; cursor: pointer; font-size: 18px; font-weight: bold; transition: 0.3s; }
-        .btn:hover { background: #1e3f36; transform: translateY(-2px); }
+        /* Table Column Widths */
+        .col-desc { width: 45%; }
+        .col-qty { width: 15%; }
+        .col-price { width: 20%; }
+        .col-total { width: 20%; text-align: right; }
+
+        .total-section { text-align: right; margin-top: 15px; padding-top: 15px; border-top: 2px solid #eee; }
+        .total-row { font-size: 1.25em; font-weight: bold; color: #2c5e50; }
         
-        /* Clean inputs for table */
-        .table-input { border: none !important; background: transparent; width: 100% !important; }
-        .table-input:focus { outline: none; background: #f9f9f9; }
+        .actions { margin-top: 30px; text-align: center; }
+        .btn { background: #2c5e50; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; padding: 15px 30px; transition: 0.2s; }
+        .btn:active { background: #1e3f36; transform: scale(0.98); }
+        
+        .table-input { border: none !important; background: transparent; padding: 5px 0; }
+        .table-input:focus { background: #f9f9f9; outline: none; }
     </style>
 </head>
 <body>
@@ -41,50 +53,46 @@
     <img src="sugarloaf.jpg" class="header-image" alt="Sugarloaf Backpackers Lodge">
 
     <div class="content">
-        <div class="row">
-            <div style="width: 45%;">
+        <div class="info-grid">
+            <div>
                 <span class="field-label">Client Name</span>
                 <input type="text" id="clientName" placeholder="Enter name">
-                <br><br>
-                <span class="field-label">Client Email</span>
-                <input type="email" id="clientEmail" placeholder="client@example.com">
             </div>
-            <div style="width: 45%; text-align: right;">
+            <div>
                 <span class="field-label">Date</span>
                 <input type="date" id="quoteDate">
-                <br><br>
+            </div>
+            <div>
+                <span class="field-label">Client Email</span>
+                <input type="email" id="clientEmail" placeholder="client@email.com">
+            </div>
+            <div>
                 <span class="field-label">Quote Number</span>
-                <input type="text" id="quoteNum" value="1001" style="text-align: right;">
+                <input type="text" id="quoteNum" value="1001">
             </div>
         </div>
 
-        <table id="quoteTable">
+        <table>
             <thead>
                 <tr>
-                    <th style="width: 50%;">Description</th>
-                    <th>Qty</th>
-                    <th>Price (ZAR)</th>
-                    <th style="text-align: right;">Total</th>
+                    <th class="col-desc">Description</th>
+                    <th class="col-qty">Qty</th>
+                    <th class="col-price">Price</th>
+                    <th class="col-total">Total</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="quoteBody">
                 <tr>
-                    <td><input type="text" class="table-input item-desc" placeholder="Booking Details..."></td>
-                    <td><input type="number" class="table-input item-qty" value="0" oninput="calculate()"></td>
-                    <td><input type="number" class="table-input item-price" value="0" oninput="calculate()"></td>
-                    <td style="text-align: right; font-weight: bold;">R <span class="item-total">0.00</span></td>
+                    <td><input type="text" class="table-input" placeholder="Booking..."></td>
+                    <td><input type="number" class="table-input" value="0" oninput="calculate()"></td>
+                    <td><input type="number" class="table-input" value="0" oninput="calculate()"></td>
+                    <td class="col-total" style="font-weight:bold;">R <span class="row-total">0.00</span></td>
                 </tr>
                 <tr>
-                    <td><input type="text" class="table-input item-desc" placeholder="Extras..."></td>
-                    <td><input type="number" class="table-input item-qty" value="0" oninput="calculate()"></td>
-                    <td><input type="number" class="table-input item-price" value="0" oninput="calculate()"></td>
-                    <td style="text-align: right; font-weight: bold;">R <span class="item-total">0.00</span></td>
-                </tr>
-                <tr>
-                    <td><input type="text" class="table-input item-desc" placeholder="..."></td>
-                    <td><input type="number" class="table-input item-qty" value="0" oninput="calculate()"></td>
-                    <td><input type="number" class="table-input item-price" value="0" oninput="calculate()"></td>
-                    <td style="text-align: right; font-weight: bold;">R <span class="item-total">0.00</span></td>
+                    <td><input type="text" class="table-input" placeholder="Extras..."></td>
+                    <td><input type="number" class="table-input" value="0" oninput="calculate()"></td>
+                    <td><input type="number" class="table-input" value="0" oninput="calculate()"></td>
+                    <td class="col-total" style="font-weight:bold;">R <span class="row-total">0.00</span></td>
                 </tr>
             </tbody>
         </table>
@@ -94,24 +102,24 @@
         </div>
 
         <div class="actions">
-            <button class="btn" onclick="sendEmail()">Email Quotation to Client</button>
+            <button class="btn" onclick="sendEmail()">Email Quotation</button>
         </div>
     </div>
 </div>
 
 <script>
-    // Sets default date to today
     document.getElementById('quoteDate').valueAsDate = new Date();
 
     function calculate() {
-        let rows = document.querySelectorAll('#quoteTable tbody tr');
+        let rows = document.querySelectorAll('#quoteBody tr');
         let grandTotal = 0;
 
         rows.forEach(row => {
-            let qty = parseFloat(row.querySelector('.item-qty').value) || 0;
-            let price = parseFloat(row.querySelector('.item-price').value) || 0;
+            let inputs = row.querySelectorAll('input');
+            let qty = parseFloat(inputs[1].value) || 0;
+            let price = parseFloat(inputs[2].value) || 0;
             let total = qty * price;
-            row.querySelector('.item-total').innerText = total.toFixed(2);
+            row.querySelector('.row-total').innerText = total.toFixed(2);
             grandTotal += total;
         });
 
@@ -123,12 +131,11 @@
         const name = document.getElementById('clientName').value;
         const total = document.getElementById('grandTotal').innerText;
         const quoteNo = document.getElementById('quoteNum').value;
-        const date = document.getElementById('quoteDate').value;
 
-        if(!email) { alert("Please enter a client email address first!"); return; }
+        if(!email) { alert("Please enter client email!"); return; }
         
         const subject = `Quotation from Sugarloaf Backpackers - #${quoteNo}`;
-        let body = `Hi ${name},\n\nThank you for your inquiry at Sugarloaf Backpackers Lodge.\n\nQuote Summary (#${quoteNo}):\nDate: ${date}\nTotal Amount: R ${total}\n\nTerms: Valid for 30 days. 50% deposit confirms booking.\n\nWe look forward to hosting you!`;
+        const body = `Hi ${name},\n\nThank you for your inquiry.\n\nQuote Summary (#${quoteNo})\nTotal: R ${total}\n\nValid for 30 days. 50% deposit confirms booking.`;
         
         window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     }
