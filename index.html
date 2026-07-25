@@ -50,7 +50,7 @@
 <body>
 
 <div class="container">
-    <img src="sugarloaf.jpg" class="header-image" alt="Sugarloaf Backpackers Lodge">
+    <img src="sugarloaf.jpg" class="header-image" alt="Quotation Tool">
 
     <div class="content">
         <div class="info-grid">
@@ -83,7 +83,7 @@
             </thead>
             <tbody id="quoteBody">
                 <tr>
-                    <td><input type="text" class="table-input" placeholder="Booking..."></td>
+                    <td><input type="text" class="table-input" placeholder="Description"></td>
                     <td><input type="number" class="table-input" value="0" oninput="calculate()"></td>
                     <td><input type="number" class="table-input" value="0" oninput="calculate()"></td>
                     <td class="col-total" style="font-weight:bold;">R <span class="row-total">0.00</span></td>
@@ -134,8 +134,8 @@
 
         if(!email) { alert("Please enter client email!"); return; }
         
-        const subject = `Quotation from Sugarloaf Backpackers - #${quoteNo}`;
-        const body = `Hi ${name},\n\nThank you for your inquiry.\n\nQuote Summary (#${quoteNo})\nTotal: R ${total}\n\nValid for 30 days. 50% deposit confirms booking.`;
+        const subject = `Quotation - #${quoteNo}`;
+        const body = `Hi ${name},\n\nThank you for your inquiry.\n\nQuote Summary (#${quoteNo})\nTotal: R ${total}\n\nValid for 30 days.`;
         
         window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     }
